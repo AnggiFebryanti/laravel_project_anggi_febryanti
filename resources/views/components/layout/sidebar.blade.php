@@ -105,6 +105,9 @@ L14,17 C12.8954305,17 12,16.1045695 12,15 C12,14.5672596 12.1403557,14.1461923
       </a>
       <ul class="menu-sub">
         <li class="menu-item">
+          <a href="{{ route('category.create')}}" class="menu-link">
+            <div data-i18n="Basic">Tambah Kategori</div>
+          </a>
           <a href="{{ route('products.create')}}" class="menu-link">
             <div data-i18n="Basic">Tambah Data</div>
           </a>
