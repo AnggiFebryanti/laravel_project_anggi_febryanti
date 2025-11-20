@@ -1,63 +1,30 @@
-<nav class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached alignitems-center bg-navbar-theme"
-  id="layout-navbar">
-  <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xlnone">
-    <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
-      <i class="bx bx-menu bx-sm"></i>
-    </a>
-  </div>
-  <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
-    <ul class="navbar-nav flex-row align-items-center ms-auto">
-      <!-- User -->
-      <li class="nav-item navbar-dropdown dropdown-user dropdown">
-        <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" databs-toggle="dropdown">
-          <div class="avatar avatar-online">
-            <img src="../assets/img/avatars/1.png" alt class="w-px-40 h-auto roundedcircle" />
-          </div>
-        </a>
-        <ul class="dropdown-menu dropdown-menu-end">
-          <li>
-            <a class="dropdown-item" href="#">
-              <div class="d-flex">
-                <div class="flex-shrink-0 me-3">
-                  <div class="avatar avatar-online">
-                    <img src="../assets/img/avatars/1.png" alt class="w-px-40 h-auto
-rounded-circle" />
-                  </div>
-                </div>
-                <div class="flex-grow-1">
-                  <span class="fw-semibold d-block">John Doe</span>
-                  <small class="text-muted">Admin</small>
-                </div>
-              </div>
-            </a>
-          </li>
-          <li>
-            <div class="dropdown-divider"></div>
-          </li>
-          <li>
-            <a class="dropdown-item" href="#">
-              <i class="bx bx-user me-2"></i>
-              <span class="align-middle">My Profile</span>
-            </a>
-          </li>
-          <li>
-            <a class="dropdown-item" href="#">
-              <i class="bx bx-cog me-2"></i>
-              <span class="align-middle">Settings</span>
-            </a>
-          </li>
-          <li>
-            <div class="dropdown-divider"></div>
-          </li>
-          <li>
-            <a class="dropdown-item" href="auth-login-basic.html">
-              <i class="bx bx-power-off me-2"></i>
-              <span class="align-middle">Log Out</span>
-            </a>
-          </li>
-        </ul>
-      </li>
-      <!--/ User -->
-    </ul>
+<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold text-primary" href="#">TokoKu</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bstarget="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link active" href="/">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="">Produk</a></li>
+        {{-- Muncul hanya kalau sudah login --}}
+        @auth
+        <li class="nav-item"><a class="nav-link" href="">Pesanan</a></li>
+        <li class="nav-item"><a class="nav-link" href="">Pembayaran</a></li>
+        @endauth
+      </ul>
+      {{-- Kalau belum login tampilkan tombol Login --}}
+      @guest
+      <a href="{{ route('login') }}" class="btn btn-primary ms-lg-3">Login</a>
+      @endguest
+      {{-- Kalau sudah login tampilkan tombol Logout --}}
+      @auth
+      <form method="POST" action="{{ route('logout') }}" class="d-inline">
+        @csrf
+        <button type="submit" class="btn btn-danger ms-lg-3">Logout</button>
+      </form>
+      @endauth
+    </div>
   </div>
 </nav>
