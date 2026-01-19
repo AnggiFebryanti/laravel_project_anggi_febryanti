@@ -6,26 +6,24 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-// Admin
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified', 'admin'])->name('dashboard');
+// Admin Routes
+Route::middleware(['auth', 'verified', 'admin'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::resource('/products', ProductController::class);
+    Route::resource('/category', CategoryController::class);
+});
 
-// User
-Route::get('/', [DashboardController::class, 'index'])->middleware(['auth', 'verified', 'admin'])->name('home');
+// User Routes
+Route::middleware(['auth', 'verified', 'user'])->group(function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('home');
+    Route::get('/user/dashboard', [DashboardController::class, 'index'])->name('user.dashboard');
+});
 
-// User Dashboard
-Route::get('/user/dashboard', [DashboardController::class, 'index'])
-    ->middleware('auth')
-    ->name('user.dashboard');
-
+// Common Routes (accessible by all authenticated users)
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
-Route::resource('/products', ProductController::class)->middleware(['auth', 'verified', 'admin']);
-
-Route::resource('/category', CategoryController::class)->middleware(['auth', 'verified', 'admin']);
-
 
 require __DIR__ . '/auth.php';
