@@ -122,4 +122,42 @@ class ProductController extends Controller
         return redirect()->route('products.index')
             ->with('success', 'Produk berhasil dihapus.');
     }
+
+    /**
+     * Menampilkan daftar produk untuk user (read-only)
+     */
+    public function userIndex(): View
+    {
+        $products = Product::with('category')
+            ->where('stok', '>', 0) // Only show products with stock
+            ->when(request('search'), function ($query) {
+                $query->where('nama', 'like', '%' . request('search') . '%');
+            })
+            ->when(request('kategori'), function ($query) {
+                $query->where('kategori_id', request('kategori'));
+            })
+            ->orderBy('created_at', 'desc')
+            ->paginate(12);
+
+        $categories = Category::all();
+
+        return view('products.user-index', compact('products', 'categories'));
+    }
+
+    /**
+     * Menampilkan detail produk untuk user
+     */
+    public function userShow($id): View
+    {
+        $product = Product::with('category')->findOrFail($id);
+
+        // Get related products (same category, excluding current product)
+        $relatedProducts = Product::where('kategori_id', $product->kategori_id)
+            ->where('id', '!=', $product->id)
+            ->where('stok', '>', 0)
+            ->take(4)
+            ->get();
+
+        return view('products.user-show', compact('product', 'relatedProducts'));
+    }
 }
