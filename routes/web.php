@@ -6,7 +6,24 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Product;
 use Illuminate\Support\Facades\Route;
+
+Route::resource('/products', ProductController::class);
+
+Route::get('/', function () {
+    $products = Product::latest()->take(8)->get();
+    return view('user.home', compact('products'));
+})->name('home');
+
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
+Route::post('/cart/update/{product}', [CartController::class, 'update'])->name('cart.update');
+Route::delete('/cart/remove/{product}', [CartController::class, 'remove'])->name('cart.remove');
+
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout.process');
+
 
 // Admin Routes
 Route::middleware(['auth', 'verified', 'admin'])->group(function () {
@@ -17,27 +34,8 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
 
 // User Routes
 Route::middleware(['auth', 'verified', 'user'])->group(function () {
-    Route::get('/', [DashboardController::class, 'index'])->name('home');
+
     Route::get('/user/dashboard', [DashboardController::class, 'index'])->name('user.dashboard');
-
-    // Product routes for users
-    Route::get('/produk', [ProductController::class, 'userIndex'])->name('products.userIndex');
-    Route::get('/produk/{id}', [ProductController::class, 'userShow'])->name('products.userShow');
-
-    // Cart routes
-    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-    Route::post('/cart/add/{product_id}', [CartController::class, 'add'])->name('cart.add');
-    Route::patch('/cart/update/{product_id}', [CartController::class, 'update'])->name('cart.update');
-    Route::delete('/cart/remove/{product_id}', [CartController::class, 'remove'])->name('cart.remove');
-    Route::delete('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
-
-    // Checkout routes
-    Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
-    Route::post('/checkout/process', [CheckoutController::class, 'process'])->name('checkout.process');
-
-    // Order routes
-    Route::get('/orders', [CheckoutController::class, 'orderHistory'])->name('orders.index');
-    Route::get('/orders/{order_id}', [CheckoutController::class, 'orderDetail'])->name('orders.show');
 });
 
 // Common Routes (accessible by all authenticated users)

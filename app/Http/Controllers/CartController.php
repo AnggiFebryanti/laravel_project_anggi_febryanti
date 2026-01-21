@@ -14,13 +14,8 @@ class CartController extends Controller
   public function index()
   {
     $cart = Session::get('cart', []);
-    $total = 0;
 
-    foreach ($cart as $item) {
-      $total += $item['harga'] * $item['qty'];
-    }
-
-    return view('cart.index', compact('cart', 'total'));
+    return view('cart.index', compact('cart'));
   }
 
   /**
@@ -50,18 +45,18 @@ class CartController extends Controller
 
     // If product already in cart, update quantity
     if (isset($cart[$product_id])) {
-      $newQty = $cart[$product_id]['qty'] + $qty;
+      $newQty = $cart[$product_id]['quantity'] + $qty;
       if ($newQty > $product->stok) {
         return back()->with('error', 'Total jumlah melebihi stok yang tersedia.');
       }
-      $cart[$product_id]['qty'] = $newQty;
+      $cart[$product_id]['quantity'] = $newQty;
     } else {
       // Add new product to cart
       $cart[$product_id] = [
         'id' => $product->id,
         'nama' => $product->nama,
         'harga' => $product->harga,
-        'qty' => $qty,
+        'quantity' => $qty,
         'stok' => $product->stok,
         'foto' => $product->foto,
       ];
